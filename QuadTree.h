@@ -11,6 +11,7 @@ public:
 	void insert(int,int);
 	void remove(int,int);
 	bool search(int,int);
+	Point closest(int,int);
 private:
 	Node *root;
 	int f,c;

@@ -3,17 +3,22 @@
 using namespace std;
 
 int main(){
-	QuadTree q(9,9);
-	for(int i=0;i<10;i++){
-		for(int j=0;j<10;j++){
-			q.insert(i,j);
+	QuadTree q(100000000,1000000000);
+	for(int i=0;i<1000;i++){
+		for(int j=0;j<1000;j++){
+			q.insert(100+i,100+j);
 		}
 	}
-	if(q.search(5,5))
-		cout<<"encontra3"<<endl;
-	//q.remove(5,5);
-	if(q.search(5,5))
-		cout<<"encontra3"<<endl;
+	Point p=q.closest(10000,10000);
+	cout<<p.getX()<<" "<<p.getX()<<endl;
+	p=q.closest(0,0);
+	cout<<p.getX()<<" "<<p.getX()<<endl;
+	if(q.search(1,1)){
+		cout<<"asdasdas"<<endl;
+	}
+	if(q.search(10000,10000)){
+		cout<<"asdasdas"<<endl;
+	}
 	cout<<"inserto"<<endl;
 	return 0;
 }

@@ -10,6 +10,13 @@ QuadTree::~QuadTree(){
 	delete root;
 }
 
+Point QuadTree::closest(int x,int y){
+	Point *p=new Point(x,y);
+	Point *aux=root->closest(p);
+	Point res(aux->getX(),aux->getY());
+	return res;
+}
+
 void QuadTree::insert(int x,int y){
 	if(root->hasChildren()){
 		root->insert(x,y);
@@ -29,7 +36,7 @@ void QuadTree::insert(int x,int y){
 }
 
 void QuadTree::remove(int x,int y){
-	if(root->hasChildren()){
+	if(root->hasChildren()){	
 		int xm=c/2;
 		int ym=f/2;
 		if(x>xm&&y>ym){		//SE
