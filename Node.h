@@ -31,6 +31,7 @@ public:
 	void insert(int,int);
 	bool hasChildren();
 	void setPoint(Point*);
+	Point *closest(Point*);
 	Point *getPoint();
 };
 

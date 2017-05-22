@@ -10,6 +10,7 @@ Node::Node(int x, int y,int x0,int x1,int y0,int y1){
 	_x1=x1;
 	_y1=y1;
 }
+
 Node::Node(int x0,int x1,int y0,int y1){
 	_p = NULL;
 	NW=SW=SE=NE=NULL;
@@ -19,13 +20,53 @@ Node::Node(int x0,int x1,int y0,int y1){
 	_y1=y1;	
 }
 
+Point* Node::closest(Point *p){
+	if(!hasChildren()){
+		return _p;
+	}
+	Point* c=NULL;	//punto mas cercano
+	if(SE!=NULL){
+		Point *cc=SE->closest(p);
+		if(c==NULL){
+			c=cc;
+		}else if(p->dist(c)>p->dist(cc)){
+			c=cc;
+		}
+	}
+	if(SW!=NULL){
+		Point *cc=SW->closest(p);
+		if(c==NULL){
+			c=cc;
+		}else if(p->dist(c)>p->dist(cc)){
+			c=cc;
+		}
+	}
+	if(NE!=NULL){
+		Point *cc=NE->closest(p);
+		if(c==NULL){
+			c=cc;
+		}else if(p->dist(c)>p->dist(cc)){
+			c=cc;
+		}
+	}
+	if(NW!=NULL){
+		Point *cc=NW->closest(p);
+		if(c==NULL){
+			c=cc;
+		}else if(p->dist(c)>p->dist(cc)){
+			c=cc;
+		}
+	}
+	return c;
+}
+
 bool Node::hasChildren(){
 	return NW!=NULL||SW!=NULL||NE!=NULL||SE!=NULL;
 }
 
 void Node::remove(int x,int y){
 	int xm=(_x0+_x1)/2;
-	int ym=(_y0+_y1)/2;
+	int ym=(_y0	+_y1)/2;
 	if(x>xm&&y>ym){		//SE
 		if(SE==NULL){
 			cout<<"no esta"<<endl;
