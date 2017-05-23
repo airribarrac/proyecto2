@@ -8,6 +8,7 @@ public:
 	Point(int,int);
 	int getX();
 	int getY();
+	double dist(Point*);
 };
 
 #endif

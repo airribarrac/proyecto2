@@ -10,6 +10,7 @@ Node::Node(int x, int y,int x0,int x1,int y0,int y1){
 	_x1=x1;
 	_y1=y1;
 }
+
 Node::Node(int x0,int x1,int y0,int y1){
 	_p = NULL;
 	NW=SW=SE=NE=NULL;
@@ -19,16 +20,56 @@ Node::Node(int x0,int x1,int y0,int y1){
 	_y1=y1;	
 }
 
+Point* Node::closest(Point *p){
+	if(!hasChildren()){
+		return _p;
+	}
+	Point* c=NULL;	//punto mas cercano
+	if(SE!=NULL){
+		Point *cc=SE->closest(p);
+		if(c==NULL){
+			c=cc;
+		}else if(p->dist(c)>p->dist(cc)){
+			c=cc;
+		}
+	}
+	if(SW!=NULL){
+		Point *cc=SW->closest(p);
+		if(c==NULL){
+			c=cc;
+		}else if(p->dist(c)>p->dist(cc)){
+			c=cc;
+		}
+	}
+	if(NE!=NULL){
+		Point *cc=NE->closest(p);
+		if(c==NULL){
+			c=cc;
+		}else if(p->dist(c)>p->dist(cc)){
+			c=cc;
+		}
+	}
+	if(NW!=NULL){
+		Point *cc=NW->closest(p);
+		if(c==NULL){
+			c=cc;
+		}else if(p->dist(c)>p->dist(cc)){
+			c=cc;
+		}
+	}
+	return c;
+}
+
 bool Node::hasChildren(){
 	return NW!=NULL||SW!=NULL||NE!=NULL||SE!=NULL;
 }
 
 void Node::remove(int x,int y){
 	int xm=(_x0+_x1)/2;
-	int ym=(_y0+_y1)/2;
+	int ym=(_y0	+_y1)/2;
 	if(x>xm&&y>ym){		//SE
 		if(SE==NULL){
-			cout<<"no esta"<<endl;
+			throw NonExistentPoint();
 		}else{
 			if(getSE()->hasChildren()){
 				getSE()->remove(x,y);
@@ -42,7 +83,7 @@ void Node::remove(int x,int y){
 					delete SE;
 					SE=NULL;
 				}else{
-					cout<<"no esta"<<endl;
+					throw NonExistentPoint();
 				}
 
 			}
@@ -51,7 +92,7 @@ void Node::remove(int x,int y){
 		
 	}else if(x>xm&&y<=ym){	//NE
 		if(getNE()==NULL){
-			cout<<"no esta"<<endl;
+			throw NonExistentPoint();
 		}else{
 			if(getNE()->hasChildren()){
 				getNE()->remove(x,y);
@@ -65,14 +106,14 @@ void Node::remove(int x,int y){
 					delete NE;
 					NE=NULL;
 				}else{
-					cout<<"no esta"<<endl;
+					throw NonExistentPoint();
 				}
 			}
 		}
 		
 	}else if(x<=xm&&y>ym){	//SW
 		if(getSW()==NULL){
-			cout<<"no esta"<<endl;
+			throw NonExistentPoint();
 		}else{
 			if(getSW()->hasChildren()){
 				getSW()->remove(x,y);
@@ -86,13 +127,13 @@ void Node::remove(int x,int y){
 					delete SW;
 					SW=NULL;
 				}else{
-					cout<<"no esta"<<endl;
+					throw NonExistentPoint();
 				}
 			}
 		}
 	}else if(x<=xm&&y<=ym){	//NW
 		if(getNW()==NULL){
-			cout<<"no esta"<<endl;
+			throw NonExistentPoint();
 		}else{
 			if(getNW()->hasChildren()){
 				getNW()->remove(x,y);
@@ -106,7 +147,7 @@ void Node::remove(int x,int y){
 					delete NW;
 					NW=NULL;
 				}else{
-					cout<<"no esta"<<endl;
+					throw NonExistentPoint();
 				}
 			}
 		}
@@ -182,8 +223,13 @@ void Node::insert(int x,int y){
 		Point *p=getPoint();
 		int xx=p->getX();
 		int yy=p->getY();
+		if(xx==x && yy==y){
+			throw PointAlreadyInserted();
+		}
 		int xm=(_x0+_x1)/2;
 		int ym=(_y0+_y1)/2;
+		delete _p;
+		_p=NULL;
 		if(xx>xm&&yy>ym){		//SE
 			SE= new Node(xx,yy,xm,_x1,ym,_y1);
 		}else if(xx>xm&&yy<=ym){	//NE

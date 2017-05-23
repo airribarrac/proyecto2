@@ -12,6 +12,12 @@ private:
 	int _x0,_x1,_y0,_y1;
 	Point *_p;
 	Node *NW, *SW, *SE, *NE;
+	class NonExistentPoint:public exception{
+		const char* what()  { return "NonExistentPoint"; }	
+	};
+	class PointAlreadyInserted:public exception{
+		const char* what()  { return "PointAlreadyInserted"; }	
+	};
 
 public:
 
@@ -31,6 +37,7 @@ public:
 	void insert(int,int);
 	bool hasChildren();
 	void setPoint(Point*);
+	Point *closest(Point*);
 	Point *getPoint();
 };
 
