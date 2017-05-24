@@ -1,5 +1,5 @@
 #include "QuadTree.h"
-
+#include <bits/stdc++.h>
 QuadTree::QuadTree(int F,int C){
 	f=F;
 	c=C;
@@ -9,7 +9,17 @@ QuadTree::QuadTree(int F,int C){
 QuadTree::~QuadTree(){
 	delete root;
 }
-
+//punto mas cercano dentro del quadtree
+Point QuadTree::closest(int x,int y){
+	if(!root->hasChildren()){
+		throw EmptyQuadtree();
+	}
+	Point *p=new Point(x,y);
+	Point *aux=root->closest(p);
+	Point res(aux->getX(),aux->getY());
+	return res;
+}
+//insertar un punto
 void QuadTree::insert(int x,int y){
 	if(root->hasChildren()){
 		root->insert(x,y);
@@ -27,14 +37,14 @@ void QuadTree::insert(int x,int y){
 		}
 	}
 }
-
+//remover un punto, quitando ramas ya no usadas
 void QuadTree::remove(int x,int y){
-	if(root->hasChildren()){
+	if(root->hasChildren()){	
 		int xm=c/2;
 		int ym=f/2;
 		if(x>xm&&y>ym){		//SE
 			if(root->getSE()==NULL){
-				cout<<"no esta"<<endl;
+				throw NonExistentPoint();
 			}else{
 				if(root->getSE()->hasChildren()){
 					root->getSE()->remove(x,y);
@@ -44,14 +54,14 @@ void QuadTree::remove(int x,int y){
 						delete root->getSE();
 						root->setSE(NULL);
 					}else{
-						cout<<"no esta"<<endl;
+						throw NonExistentPoint();
 					}
 				}
 			}
 			
 		}else if(x>xm&&y<=ym){	//NE
 			if(root->getNE()==NULL){
-				cout<<"no esta"<<endl;
+				throw NonExistentPoint();
 			}else{
 				if(root->getNE()->hasChildren()){
 					root->getNE()->remove(x,y);
@@ -61,14 +71,14 @@ void QuadTree::remove(int x,int y){
 						delete root->getNE();
 						root->setNE(NULL);
 					}else{
-						cout<<"no esta"<<endl;
+						throw NonExistentPoint();
 					}
 				}
 			}
 			
 		}else if(x<=xm&&y>ym){	//SW
 			if(root->getSW()==NULL){
-				cout<<"no esta"<<endl;
+				throw NonExistentPoint();
 			}else{
 				if(root->getSW()->hasChildren()){
 					root->getSW()->remove(x,y);
@@ -78,13 +88,13 @@ void QuadTree::remove(int x,int y){
 						delete root->getSW();
 						root->setSW(NULL);
 					}else{
-						cout<<"no esta"<<endl;
+						throw NonExistentPoint();
 					}
 				}
 			}
 		}else if(x<=xm&&y<=ym){	//NW
 			if(root->getNW()==NULL){
-				cout<<"no esta"<<endl;
+				throw NonExistentPoint();
 			}else{
 				if(root->getNW()->hasChildren()){
 					root->getNW()->remove(x,y);
@@ -94,16 +104,16 @@ void QuadTree::remove(int x,int y){
 						delete root->getNW();
 						root->setNW(NULL);
 					}else{
-						cout<<"no esta"<<endl;
+						throw NonExistentPoint();
 					}
 				}
 			}
 		}	
 	}else{
-		cout<<"no esta"<<endl;
+		throw NonExistentPoint();
 	}
 }
-
+//true si es que el punto existe
 bool QuadTree::search(int x,int y){
 	if(root->hasChildren())
 		return root->search(x,y);
