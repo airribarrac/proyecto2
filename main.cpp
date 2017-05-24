@@ -1,19 +1,26 @@
+//agregar comentario a define si se utiliza prueba.cpp
+//#define MAIN
+#ifdef MAIN
+
 #include <bits/stdc++.h>
 #include "QuadTree.h"
+#include "Point.h"
 using namespace std;
 
 int main(){
-	QuadTree q(9,9);
-	for(int i=0;i<10;i++){
-		for(int j=0;j<10;j++){
-			q.insert(i,j);
+	ifstream f ("input.txt");
+	int n,m,p;
+	f>>n>>m>>p;
+	QuadTree q(n,m);
+	for(int i=0;i<p;i++){
+		int x,y;
+		f>>x>>y;
+		q.insert(x,y);
+		if(q.search(x,y)){
+			cout<<x<<" "<<y<<" insertado"<<endl;
 		}
 	}
-	if(q.search(5,5))
-		cout<<"encontra3"<<endl;
-	//q.remove(5,5);
-	if(q.search(5,5))
-		cout<<"encontra3"<<endl;
-	cout<<"inserto"<<endl;
 	return 0;
 }
+
+#endif

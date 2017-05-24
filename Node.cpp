@@ -2,6 +2,10 @@
 #include "Node.h"
 using namespace std;
 
+/*
+	constructor para nodo con punto
+*/
+
 Node::Node(int x, int y,int x0,int x1,int y0,int y1){
 	_p = new Point(x,y);
 	NW=SW=SE=NE=NULL;
@@ -10,6 +14,10 @@ Node::Node(int x, int y,int x0,int x1,int y0,int y1){
 	_x1=x1;
 	_y1=y1;
 }
+
+/*
+	constructor para root
+*/
 Node::Node(int x0,int x1,int y0,int y1){
 	_p = NULL;
 	NW=SW=SE=NE=NULL;
@@ -18,40 +26,88 @@ Node::Node(int x0,int x1,int y0,int y1){
 	_x1=x1;
 	_y1=y1;	
 }
-
+/*
+	funcion recursiva que retorna el punto mas cercano utilizando dfs
+*/
+Point* Node::closest(Point *p){
+	if(!hasChildren()){
+		return _p;
+	}
+	Point* c=NULL;	//punto mas cercano encontrado en el subarbol
+	if(SE!=NULL){
+		Point *cc=SE->closest(p);
+		if(c==NULL){
+			c=cc;
+		}else if(p->dist(c)>p->dist(cc)){
+			c=cc;
+		}
+	}
+	if(SW!=NULL){
+		Point *cc=SW->closest(p);
+		if(c==NULL){
+			c=cc;
+		}else if(p->dist(c)>p->dist(cc)){
+			c=cc;
+		}
+	}
+	if(NE!=NULL){
+		Point *cc=NE->closest(p);
+		if(c==NULL){
+			c=cc;
+		}else if(p->dist(c)>p->dist(cc)){
+			c=cc;
+		}
+	}
+	if(NW!=NULL){
+		Point *cc=NW->closest(p);
+		if(c==NULL){
+			c=cc;
+		}else if(p->dist(c)>p->dist(cc)){
+			c=cc;
+		}
+	}
+	return c;
+}
+// retorna true si hay al menos un nodo hijo
 bool Node::hasChildren(){
 	return NW!=NULL||SW!=NULL||NE!=NULL||SE!=NULL;
 }
-
+/*
+	elimina punto del arbol, si no existe lanza una excepcion
+	además elimina las ramas que ya no se utilizan
+*/
 void Node::remove(int x,int y){
 	int xm=(_x0+_x1)/2;
-	int ym=(_y0+_y1)/2;
+	int ym=(_y0	+_y1)/2;
+	//busca cuadrante
 	if(x>xm&&y>ym){		//SE
 		if(SE==NULL){
-			cout<<"no esta"<<endl;
+			throw NonExistentPoint();
 		}else{
 			if(getSE()->hasChildren()){
 				getSE()->remove(x,y);
+				//elimina ramas ya no se utilizando
 				if(!getSE()->hasChildren()){
 					delete SE;
 					SE=NULL;
 				}
 			}else{
 				Point *p=getSE()->getPoint();
+				//elimina el punto si es el correcto
 				if(p->getX()==x && p->getY()==y){
 					delete SE;
 					SE=NULL;
 				}else{
-					cout<<"no esta"<<endl;
+					throw NonExistentPoint();
 				}
 
 			}
 
 		}
-		
+		// lo mismo para cada cuadrante
 	}else if(x>xm&&y<=ym){	//NE
 		if(getNE()==NULL){
-			cout<<"no esta"<<endl;
+			throw NonExistentPoint();
 		}else{
 			if(getNE()->hasChildren()){
 				getNE()->remove(x,y);
@@ -65,14 +121,14 @@ void Node::remove(int x,int y){
 					delete NE;
 					NE=NULL;
 				}else{
-					cout<<"no esta"<<endl;
+					throw NonExistentPoint();
 				}
 			}
 		}
 		
 	}else if(x<=xm&&y>ym){	//SW
 		if(getSW()==NULL){
-			cout<<"no esta"<<endl;
+			throw NonExistentPoint();
 		}else{
 			if(getSW()->hasChildren()){
 				getSW()->remove(x,y);
@@ -86,13 +142,13 @@ void Node::remove(int x,int y){
 					delete SW;
 					SW=NULL;
 				}else{
-					cout<<"no esta"<<endl;
+					throw NonExistentPoint();
 				}
 			}
 		}
 	}else if(x<=xm&&y<=ym){	//NW
 		if(getNW()==NULL){
-			cout<<"no esta"<<endl;
+			throw NonExistentPoint();
 		}else{
 			if(getNW()->hasChildren()){
 				getNW()->remove(x,y);
@@ -106,13 +162,13 @@ void Node::remove(int x,int y){
 					delete NW;
 					NW=NULL;
 				}else{
-					cout<<"no esta"<<endl;
+					throw NonExistentPoint();
 				}
 			}
 		}
 	}	
 }
-
+//busca dentro del arbol recorriendo por altura
 bool Node::search(int x,int y){
 	if(hasChildren()){
 		int xm=(_x0+_x1)/2;
@@ -147,7 +203,9 @@ bool Node::search(int x,int y){
 		return p->getX()==x && p->getY()==y;
 	}
 }
-
+/*
+	busca donde debe insertarse el nodo, considerando conflictos en cuadrantes, luego crea el nodo
+*/
 void Node::insert(int x,int y){
 	if(hasChildren()){
 		int xm=(_x0+_x1)/2;
@@ -182,8 +240,13 @@ void Node::insert(int x,int y){
 		Point *p=getPoint();
 		int xx=p->getX();
 		int yy=p->getY();
+		if(xx==x && yy==y){
+			throw PointAlreadyInserted();
+		}
 		int xm=(_x0+_x1)/2;
 		int ym=(_y0+_y1)/2;
+		delete _p;
+		_p=NULL;
 		if(xx>xm&&yy>ym){		//SE
 			SE= new Node(xx,yy,xm,_x1,ym,_y1);
 		}else if(xx>xm&&yy<=ym){	//NE
@@ -216,6 +279,10 @@ Node::~Node(){
 		delete _p;
 	}
 }
+
+/*
+	getters y settersq varios
+*/
 
 Node *Node::getNW(){
 	return NW;
